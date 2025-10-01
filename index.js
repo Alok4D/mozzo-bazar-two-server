@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const userCollection = client.db("mozzoBazarTwo").collection("users");
     const menuCollection = client.db("mozzoBazarTwo").collection("menu");
@@ -340,12 +340,12 @@ async function run() {
     // await client.close();
   }
 }
-run().catch(console.dir);
+// run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Mozzo Bazar Server is Running");
 });
 
 app.listen(port, () => {
-  console.log(`Bistro boss is sitting on port ${port}`);
+  console.log(`Mozzo Bazar is sitting on port ${port}`);
 });
