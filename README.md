@@ -1,163 +1,135 @@
-## What We Did Today.
+# 🍽️ Mozzo Bazar – Server Side
 
-- **Different Dashboard Home Page for User and Admin**: Implemented distinct home pages for users and administrators to provide customized experiences based on roles.
-- **Fix Login Issue and API Race Condition**: Resolved issues related to user login and addressed race conditions in API requests to ensure smooth and reliable operations.
-- **Create Admin Dashboard Stats API**: Developed an API to fetch and display statistical data for the admin dashboard, providing insights into various metrics.
-- **Load Data and Display Stats on the Admin Home**: Loaded statistical data and displayed it on the admin home page to give administrators a quick overview of important metrics.
-- **High-Level Overview of Aggregate Pipeline**: Provided a high-level overview of the MongoDB aggregate pipeline for data aggregation and analysis.
-- **Get Order Quantity and Revenue by Category**: Used aggregate functions to calculate order quantities and revenue by category, enabling detailed financial insights.
-- **Display Custom Bar Chart and Custom Pie Chart**: Created custom bar and pie charts to visually represent data, making it easier to understand and analyze.
-- **Deploy Bistro Boss to Vercel and Firebase**: Deployed the Bistro Boss application to Vercel and Firebase for hosting, ensuring scalability and high availability.
+This is the **backend server** for Mozzo Bazar, a modern restaurant web application.  
+It provides **RESTful APIs** for authentication, role management, orders, cart system, payments, and reviews.  
 
-# MongoDB Aggregation Documentation
+---
 
-## Overview
-MongoDB's aggregation framework is a powerful tool for data processing and analysis, allowing you to transform and summarize data in a variety of ways. Aggregations are operations that process data records and return computed results. They are often used to group values from multiple documents together, perform operations on the grouped data, and return a single result.
+## 🚀 Features
+- 🌐 **REST API** with Express.js  
+- 🛢 **Database**: MongoDB (Mongoose ODM)  
+- 🔐 **Authentication & Authorization**: Firebase JWT / Custom JWT  
+- 👥 **Role Management**: Separate roles for **User** and **Admin**  
+- 💳 **Payment Integration**: Stripe API for secure payments  
+- 🛒 **Cart System**: Add, remove, and checkout items  
+- 📝 **Reviews API** – Users can post & view reviews  
+- 📊 **Admin Controls** – Manage users, menu items, and orders  
 
-## Aggregation Pipeline
-The aggregation pipeline is a framework for data aggregation, modeled on the concept of data processing pipelines. Documents enter a multi-stage pipeline that transforms the documents into an aggregated result. Each stage in the pipeline performs an operation on the input documents and passes the results to the next stage.
+---
 
-### Basic Syntax
-```javascript
-db.collection.aggregate([
-  { $stage1: { /* stage1 options */ }},
-  { $stage2: { /* stage2 options */ }},
-  // More stages as needed
-])
+## 🛠️ Tech Stack
+- **Backend Framework:** Express.js  
+- **Database:** MongoDB with Mongoose  
+- **Authentication:** Firebase / JWT  
+- **Payment:** Stripe  
+- **Environment:** Node.js  
+
+---
+
+## 📂 Project Structure
 ```
-# MongoDB Aggregation Pipeline Guide
-
-## Common Aggregation Stages
-
-### $match
-Filters documents based on specified conditions.
-
-```javascript
-{ $match: { status: "A" } }
+mozzo-bazar-server/
+├── src/
+│   ├── app/
+│   │   ├── models/        # Mongoose schemas
+│   │   ├── routes/        # Express routes
+│   │   ├── controllers/   # Business logic
+│   │   └── services/      # Database queries
+│   ├── config/            # DB & JWT config
+│   ├── index.js           # Server entry point
+│   └── utils/             # Helper functions
+├── .env.example           # Example environment variables
+├── package.json           # Dependencies
+└── README.md              # Documentation
 ```
 
-## $group
-Groups documents by a specified identifier and applies accumulator expressions to each group.
+---
 
-```javascript
-{ 
-  $group: {
-    _id: "$field",
-    total: { $sum: "$amount" }
-  }
-}
+## ⚡ Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Alok4D/bistro-boss-server
+   cd mozzo-bazar-server
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Variables**
+   Create a `.env` file in the root directory:
+   ```env
+   PORT=5000
+   DATABASE_URL=mongodb+srv://<username>:<password>@cluster0.mongodb.net/mozzoBazar
+   JWT_SECRET=yourSecretKey
+   STRIPE_SECRET_KEY=yourStripeSecret
+   ```
+
+4. **Run the server**
+   ```bash
+   npm run dev
+   ```
+   The server will start on `http://localhost:5000`
+
+---
+
+## 📡 API Endpoints
+
+### 🔑 Auth
+- `POST /auth/signup` – Register user  
+- `POST /auth/login` – Login & get JWT  
+- `GET /auth/profile` – Get logged-in user info  
+
+### 🛒 Cart
+- `GET /cart?email=user@example.com` – Get user cart  
+- `POST /cart` – Add to cart  
+- `DELETE /cart/:id` – Remove item  
+
+### 🍴 Menu
+- `GET /menu` – Get all menu items  
+- `POST /menu` (Admin) – Add new item  
+- `PATCH /menu/:id` (Admin) – Update item  
+- `DELETE /menu/:id` (Admin) – Delete item  
+
+### 💳 Payment
+- `POST /create-payment-intent` – Stripe payment intent  
+- `POST /payments` – Save payment info  
+
+### 📝 Reviews
+- `GET /reviews` – Get all reviews  
+- `GET /reviews?email=user@example.com` – Get user-specific reviews  
+- `POST /reviews` – Add a review  
+
+### 👥 Users (Admin Only)
+- `GET /users` – Get all users  
+- `PATCH /users/:id` – Update role (Admin/User)  
+- `DELETE /users/:id` – Remove user  
+
+---
+
+## 👥 Role Management
+- **User**: Can browse menu, manage cart, make payments, post reviews  
+- **Admin**: Full control – manage items, users, and track orders  
+
+👉 Demo Credentials same as **frontend**  
+- User: `mozzouser@gmail.com` / `@MozzoUser1`  
+- Admin: `mozzoadmin@gmail.com` / `@MozzoAdmin1`  
+
+---
+
+## 🌍 Deployment
+- **Backend Hosting:** Render / Railway / Vercel Serverless  
+- **Database:** MongoDB Atlas  
+- **Payment:** Stripe  
+
+---
+
+## 👨‍💻 Author
+- **Alok**  
+  📧 alokroy602701@gmail.com  
+  🔗 [Portfolio](https://alok-roy-portfolio.vercel.app/)  
+  🐙 [GitHub](https://github.com/Alok4D)  
 ```
-## $project
-The `$project` stage reshapes documents by adding or removing fields. It allows you to specify which fields to include or exclude in the output documents, along with computed fields using expressions.
-
-### Example:
-```javascript
-{ 
-  $project: {
-    name: 1,
-    total: { $sum: "$items.price" }
-  }
-}
-```
-## $sort
-The `$sort` stage sorts input documents based on the specified criteria. It's useful for ordering documents based on one or more fields, either ascending or descending.
-
-## Example: 
-```javascript
-{ $sort: { total: -1 } }
-```
-## $limit
-Limits the number of documents passed to the next stage.
-
-```javascript
-{ $limit: 5 }
-```
-## $lookup
-Performs a left outer join with another collection.
-
-```javascript
-{
-  $lookup: {
-    from: "otherCollection",
-    localField: "localField",
-    foreignField: "foreignField",
-    as: "fromItems"
-  }
-}
-```
-# Example Aggregation Pipeline: Calculate Total Sales by Category
-
-```javascript
-db.sales.aggregate([
-  { 
-    $match: { 
-      date: { $gte: ISODate("2024-01-01"), $lt: ISODate("2025-01-01") }
-    } 
-  },
-  { 
-    $group: {
-      _id: "$category",
-      totalSales: { $sum: "$amount" }
-    } 
-  },
-  { 
-    $sort: { totalSales: -1 } 
-  }
-])
-```
-# $unwind
-
-Deconstructs an array field into separate documents.
-
-```javascript
-{ $unwind: "$items" }
-```
-# $addFields
-
-Adds new fields to documents.
-
-```javascript
-{ 
-  $addFields: {
-    totalAfterDiscount: { $subtract: ["$total", "$discount"] }
-  } 
-}
-```
-This example calculates a new field totalAfterDiscount by subtracting the value of the field discount from the value of the field total.
-# $redact
-
-Controls document field visibility.
-
-```javascript
-{
-  $redact: {
-    $cond: {
-      if: { $eq: ["$status", "A"] },
-      then: "$$KEEP",
-      else: "$$PRUNE"
-    }
-  }
-}
-```
-This example controls the visibility of document fields based on the value of the status field. If the status field is equal to "A", the document is kept ($$KEEP), otherwise it's pruned ($$PRUNE).
-# $out
-
-Writes aggregation results to a specified collection.
-
-```javascript
-{ $out: "resultCollection" }
-```
-This stage saves the results of the aggregation pipeline to a new collection named "resultCollection".
-# Best Practices
-
-- **Indexing:** Ensure indexing on fields used in $match, $group, and $lookup stages for better performance.
-- **Pipeline Optimization:** Place $match and $sort stages early in the pipeline to reduce document processing.
-- **Stage Limits:** Be aware of memory limitations; consider breaking complex pipelines into multiple stages or using $merge.
-
-# Conclusion
-
-MongoDB's aggregation framework is versatile and powerful, allowing for complex data transformations and analyses. Mastering the various stages and techniques enables efficient data processing and valuable insights extraction.
-
-For detailed information, refer to the official [MongoDB documentation](https://www.mongodb.com/docs/manual/aggregation/).
-
 
