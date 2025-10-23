@@ -34,6 +34,7 @@ async function run() {
     const reviewCollection = client.db("mozzoBazarTwo").collection("reviews");
     const cartCollection = client.db("mozzoBazarTwo").collection("carts");
     const paymentCollection = client.db("mozzoBazarTwo").collection("payments");
+     const contactCollection = client.db("mozzoBazarTwo").collection("contacts");
 
     // jwt related api
     app.post("/jwt", async (req, res) => {
@@ -71,6 +72,26 @@ async function run() {
       }
       next();
     };
+
+    // contact api
+       // Save contact form
+    app.post("/contacts", async (req, res) => {
+      const contact = req.body;
+      if (!contact.name || !contact.email || !contact.subject) {
+        return res.status(400).send({ message: "Name, email, and subject are required" });
+      }
+      const result = await contactCollection.insertOne({
+        ...contact,
+        createdAt: new Date(),
+      });
+      res.send({ success: true, data: result });
+    });
+
+    // Optional: Get all contacts
+    app.get("/contacts", async (req, res) => {
+      const result = await contactCollection.find().toArray();
+      res.send(result);
+    });
 
     // users related api
     app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
